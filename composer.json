@@ -1,6 +1,6 @@
 {
     "name": "peppol-sh/sdk",
-    "description": "Official PHP SDK for the peppol.sh Peppol API: send and receive Peppol e-invoicing documents (UBL, EN 16931) from PHP and Laravel.",
+    "description": "Official PHP SDK for the peppol.sh Peppol API: Peppol e-invoicing (UBL, EN 16931) for PHP and Laravel.",
     "license": "MIT",
     "type": "library",
     "keywords": [
