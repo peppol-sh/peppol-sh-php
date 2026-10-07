@@ -1,0 +1,150 @@
+# Runs at the root of the public mirror repo (peppol-sh/peppol-sh-php) after the
+# subtree split. Inert inside the monorepo, which has its own CI workflow (a
+# smaller PHP matrix in the root .github/workflows/ci.yml).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  # The full suite on every supported PHP version. orchestra/testbench is a
+  # dev dependency, so Composer also installs the newest Laravel that the PHP
+  # version permits (7.4 and 8.0 -> Laravel 8, 8.1 -> 10, 8.2 -> 12, 8.3 and
+  # later -> 13) and the Laravel tests run. `composer test` selects
+  # phpunit9.xml.dist for PHPUnit 9.6 and phpunit.xml.dist for 10.5 and later.
+  #
+  # composer.json sets `config.audit.block-insecure` to false: Laravel 8 to 11
+  # are end-of-life and have open security advisories, and Composer 2.9+ does
+  # not install such versions by default. They are dev dependencies only.
+  test:
+    name: PHP ${{ matrix.php }} (${{ matrix.deps }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ["7.4", "8.0", "8.1", "8.2", "8.3", "8.4", "8.5"]
+        deps: [highest]
+        include:
+          # Proves the lower bounds in composer.json are real.
+          - php: "7.4"
+            deps: lowest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer:v2
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ runner.os }}-php${{ matrix.php }}-${{ matrix.deps }}-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            composer-${{ runner.os }}-php${{ matrix.php }}-
+
+      # `composer update`, not `install`: a library commits no composer.lock.
+      - name: Install dependencies
+        run: >-
+          composer update --prefer-dist --no-interaction --no-progress
+          ${{ matrix.deps == 'lowest' && '--prefer-lowest --prefer-stable' || '' }}
+
+      - name: Test
+        run: composer test
+
+  # Static checks, once, on the newest PHP.
+  quality:
+    name: Lint and analyse
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.5"
+          coverage: none
+          tools: composer:v2
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ runner.os }}-php8.5-highest-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            composer-${{ runner.os }}-php8.5-
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-interaction --no-progress
+
+      - name: Lint
+        run: composer lint
+
+      - name: Analyse
+        run: composer analyse
+
+  # Laravel integration (src/Laravel/). Each row is a valid PHP x Laravel pair;
+  # orchestra/testbench selects the Laravel version and the PHPUnit version
+  # (9.6 for Laravel 8 and 9, 10.5 for Laravel 10, 11.5 or later after that):
+  #   testbench 6 -> Laravel 8    testbench 9  -> Laravel 11
+  #   testbench 7 -> Laravel 9    testbench 10 -> Laravel 12
+  #   testbench 8 -> Laravel 10   testbench 11 -> Laravel 13
+  laravel:
+    name: Laravel ${{ matrix.laravel }} (PHP ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { laravel: "8", testbench: "^6.0", php: "7.4" }
+          - { laravel: "8", testbench: "^6.0", php: "8.0" }
+          - { laravel: "9", testbench: "^7.0", php: "8.1" }
+          - { laravel: "10", testbench: "^8.0", php: "8.1" }
+          - { laravel: "10", testbench: "^8.0", php: "8.3" }
+          - { laravel: "11", testbench: "^9.0", php: "8.2" }
+          - { laravel: "11", testbench: "^9.0", php: "8.4" }
+          - { laravel: "12", testbench: "^10.0", php: "8.2" }
+          - { laravel: "12", testbench: "^10.0", php: "8.5" }
+          - { laravel: "13", testbench: "^11.0", php: "8.3" }
+          - { laravel: "13", testbench: "^11.0", php: "8.5" }
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer:v2
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ runner.os }}-php${{ matrix.php }}-laravel${{ matrix.laravel }}-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            composer-${{ runner.os }}-php${{ matrix.php }}-
+
+      - name: Select Laravel ${{ matrix.laravel }}
+        run: composer require --dev --no-update "orchestra/testbench:${{ matrix.testbench }}"
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-interaction --no-progress
+
+      # Same PHPUnit suite as the `test` job, with the Laravel version of this row.
+      - name: Test
+        run: composer test

@@ -1,0 +1,90 @@
+{
+    "name": "peppol-sh/sdk",
+    "description": "Official PHP SDK for the peppol.sh Peppol API: send and receive Peppol e-invoicing documents (UBL, EN 16931) from PHP and Laravel.",
+    "license": "MIT",
+    "type": "library",
+    "keywords": [
+        "peppol",
+        "e-invoicing",
+        "einvoicing",
+        "e-invoice",
+        "ubl",
+        "en16931",
+        "peppol-bis",
+        "invoice",
+        "belgium",
+        "laravel",
+        "api",
+        "sdk"
+    ],
+    "homepage": "https://peppol.sh",
+    "support": {
+        "issues": "https://github.com/peppol-sh/peppol-sh-php/issues",
+        "source": "https://github.com/peppol-sh/peppol-sh-php",
+        "docs": "https://peppol.sh/docs"
+    },
+    "require": {
+        "php": "^7.4 || ^8.0",
+        "ext-curl": "*",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.64",
+        "orchestra/testbench": "^6.47 || ^7.0 || ^8.0 || ^9.0 || ^10.0 || ^11.0",
+        "phpstan/phpstan": "^1.12 || ^2.0",
+        "phpunit/phpunit": "^9.6 || ^10.5 || ^11.5 || ^12.0 || ^13.0"
+    },
+    "conflict": {
+        "illuminate/support": "<8.0"
+    },
+    "suggest": {
+        "laravel/framework": "The SDK has a Laravel integration (Laravel 8 to 13): the Peppol facade, the peppol.webhook route middleware, and Peppol::fake()."
+    },
+    "autoload": {
+        "psr-4": {
+            "PeppolSh\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PeppolSh\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "audit": {
+            "block-insecure": false
+        },
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "PeppolSh\\Laravel\\PeppolServiceProvider"
+            ],
+            "aliases": {
+                "Peppol": "PeppolSh\\Laravel\\Facades\\Peppol"
+            }
+        }
+    },
+    "scripts": {
+        "analyse": [
+            "phpstan analyse --no-progress",
+            "phpstan analyse --no-progress --configuration=phpstan-php74.neon.dist"
+        ],
+        "check": [
+            "@lint",
+            "@analyse",
+            "@test"
+        ],
+        "lint": "php-cs-fixer fix --dry-run --diff",
+        "lint:fix": "php-cs-fixer fix",
+        "test": "@php tests/run-phpunit.php"
+    },
+    "scripts-descriptions": {
+        "analyse": "Run PHPStan: the main analysis, then the PHP 7.4 pass on the dependency-free code.",
+        "check": "Run the code style check, PHPStan, and the tests.",
+        "lint": "Check the code style (no changes).",
+        "lint:fix": "Fix the code style.",
+        "test": "Run the PHPUnit tests (selects the configuration file for the installed PHPUnit version)."
+    }
+}

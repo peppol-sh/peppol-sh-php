@@ -1,0 +1,21 @@
+# Second pass: reports syntax and functions that PHP 7.4 does not have. Only
+# the code with no third-party dependency is in scope (see phpstan.neon.dist);
+# the CI matrix runs src/Laravel on PHP 7.4.
+parameters:
+    level: max
+    phpVersion:
+        min: 70400
+        max: 80599
+    paths:
+        - src
+    excludePaths:
+        - src/Laravel
+    treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        # The API returns decoded JSON. PHPStan cannot prove that it has the
+        # generated array shape in the @return tag of each resource method.
+        -
+            identifier: return.type
+            paths:
+                - src/Resources/*
+                - src/Client.php

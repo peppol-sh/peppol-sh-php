@@ -1,0 +1,23 @@
+# Main analysis: the SDK, the Laravel integration, and the tests, against the
+# installed dev dependencies. Those dependencies (PHPUnit, Laravel, Symfony)
+# use PHP 8 syntax, so PHPStan cannot read them with a PHP 7.4 lower bound.
+# phpstan-php74.neon.dist does a second pass with that lower bound.
+parameters:
+    level: max
+    phpVersion:
+        min: 80400
+        max: 80599
+    paths:
+        - src
+        - tests
+    excludePaths:
+        - tests/Fixtures/server.php
+    treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        # The API returns decoded JSON. PHPStan cannot prove that it has the
+        # generated array shape in the @return tag of each resource method.
+        -
+            identifier: return.type
+            paths:
+                - src/Resources/*
+                - src/Client.php

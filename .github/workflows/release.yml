@@ -1,0 +1,66 @@
+# Runs at the root of the public mirror repo (peppol-sh/peppol-sh-php).
+# Releases happen here, tag-triggered, so they are auditable where the
+# community looks (ADR-0022).
+#
+# There is NO publish step and no registry token. Packagist does not accept
+# uploads: it reads the git tags of the repo through its GitHub hook, so the
+# pushed tag `vX.Y.Z` IS the release of `peppol-sh/sdk`. This workflow only
+# guards the tag (version match, valid composer.json, green tests) and then
+# creates the GitHub Release.
+#
+# One-time setup (a human does this, once):
+#   1. Submit https://github.com/peppol-sh/peppol-sh-php on
+#      https://packagist.org/packages/submit (package name `peppol-sh/sdk`,
+#      taken from composer.json).
+#   2. Enable the Packagist GitHub hook/app for the `peppol-sh` org, so each
+#      push and tag updates Packagist automatically. Without it, Packagist
+#      only sees new tags when someone clicks "Update" on the package page.
+#
+# To release: bump `PeppolSh\Version::VERSION` in the monorepo, merge, wait for
+# the mirror push, then tag `vX.Y.Z` on this repo's `main`.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write # gh release create
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.5"
+          coverage: none
+          tools: composer:v2
+
+      # A tag that disagrees with the constant would ship an SDK that reports
+      # the wrong version in its User-Agent. Fail before the Release exists.
+      - name: Check that the tag matches PeppolSh\Version::VERSION
+        run: |
+          tag_version="${GITHUB_REF_NAME#v}"
+          code_version="$(php -r 'require "src/Version.php"; echo PeppolSh\Version::VERSION;')"
+          if [ "$tag_version" != "$code_version" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match Version::VERSION ($code_version) in src/Version.php"
+            exit 1
+          fi
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+      # `composer update`, not `install`: a library commits no composer.lock.
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-interaction --no-progress
+
+      - name: Test
+        run: composer test
+
+      - name: Create GitHub Release
+        run: gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}
