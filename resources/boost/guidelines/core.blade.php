@@ -75,6 +75,7 @@ $document['status']; // "queued"
 @endverbatim
 
 - `unit` is a UN/CEFACT unit code (`C62` is "piece"). `peppol_id` has the format `<scheme>:<value>` (`0208` is the Belgian enterprise number).
+- A credit note has `'type' => 'credit_note'`. To add the preceding invoice reference (the invoice that the credit note credits), set `preceding_invoice`: `['number' => 'INV-2026-001', 'issue_date' => '2026-03-01']`. `number` is mandatory, `issue_date` is optional.
 - Dependency injection gives the same client:
 
 @verbatim

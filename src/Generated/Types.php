@@ -273,6 +273,7 @@ namespace PeppolSh\Generated;
  *   vatex?: string,
  *   vatex_note?: string,
  *   invoice_period?: InvoicePeriod,
+ *   preceding_invoice?: PrecedingInvoice,
  * }
  *
  * @phpstan-type AllowanceCharge array{
@@ -284,6 +285,11 @@ namespace PeppolSh\Generated;
  * @phpstan-type InvoicePeriod array{
  *   start_date?: string,
  *   end_date?: string,
+ * }
+ *
+ * @phpstan-type PrecedingInvoice array{
+ *   number: string,
+ *   issue_date?: string,
  * }
  *
  * @phpstan-type Party array{
@@ -339,6 +345,7 @@ namespace PeppolSh\Generated;
  *   currency?: string,
  *   issue_date?: string,
  *   due_date?: string,
+ *   preceding_invoice?: PrecedingInvoice,
  *   created_at?: string,
  *   sent_at?: string|null,
  *   delivered_at?: string|null,
@@ -693,6 +700,7 @@ namespace PeppolSh\Generated;
  *   vatex?: string,
  *   vatex_note?: string,
  *   invoice_period?: InvoicePeriod,
+ *   preceding_invoice?: PrecedingInvoice,
  *   company_id: string,
  * }
  *
@@ -718,6 +726,7 @@ namespace PeppolSh\Generated;
  *   vatex?: string,
  *   vatex_note?: string,
  *   invoice_period?: InvoicePeriod,
+ *   preceding_invoice?: PrecedingInvoice,
  *   company_id: string,
  * }>
  *
@@ -788,6 +797,7 @@ namespace PeppolSh\Generated;
  *   vatex?: string,
  *   vatex_note?: string,
  *   invoice_period?: InvoicePeriod,
+ *   preceding_invoice?: PrecedingInvoice,
  *   company_id: string,
  * }
  *

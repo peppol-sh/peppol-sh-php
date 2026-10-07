@@ -209,6 +209,35 @@ final class ResourcesTest extends TestCase
         ];
     }
 
+    public function testSendPassesThePrecedingInvoiceReferenceInTheBody(): void
+    {
+        $preceding = ['number' => 'INV-2026-001', 'issue_date' => '2026-03-01'];
+        $creditNote = ['type' => 'credit_note', 'preceding_invoice' => $preceding] + Payloads::invoice();
+        $http = new FakeHttpClient([FakeHttpClient::json(['id' => 'doc_1', 'status' => 'queued'], 202)]);
+        $client = new Client('ps_test_abc', ['http_client' => $http]);
+
+        $client->documents()->send($creditNote);
+
+        $http->assertSent('POST', '/v1/documents');
+        $json = $http->getRequests()[0]->getJson();
+        self::assertIsArray($json);
+        self::assertSame('credit_note', $json['type']);
+        self::assertSame($preceding, $json['preceding_invoice']);
+    }
+
+    public function testGetReturnsThePrecedingInvoiceReference(): void
+    {
+        $preceding = ['number' => 'INV-2026-001', 'issue_date' => '2026-03-01'];
+        $http = new FakeHttpClient([
+            FakeHttpClient::json(['id' => 'doc_1', 'type' => 'credit_note', 'preceding_invoice' => $preceding]),
+        ]);
+        $client = new Client('ps_test_abc', ['http_client' => $http]);
+
+        $document = $client->documents()->get('doc_1', ['company_id' => 'com_1']);
+
+        self::assertSame($preceding, $document['preceding_invoice'] ?? null);
+    }
+
     public function testUblReturnsTheXmlString(): void
     {
         $xml = '<?xml version="1.0"?><Invoice/>';
