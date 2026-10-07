@@ -16,8 +16,9 @@
 #      push and tag updates Packagist automatically. Without it, Packagist
 #      only sees new tags when someone clicks "Update" on the package page.
 #
-# To release: bump `PeppolSh\Version::VERSION` in the monorepo, merge, wait for
-# the mirror push, then tag `vX.Y.Z` on this repo's `main`.
+# To release: bump `PeppolSh\Version::VERSION` and date the CHANGELOG entry in
+# the monorepo, then merge. The monorepo mirror workflow pushes the code and
+# the `vX.Y.Z` tag to this repo.
 name: Release
 
 on:

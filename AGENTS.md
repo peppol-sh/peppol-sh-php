@@ -150,11 +150,14 @@ and a commit made directly on the mirror is lost.
 To release:
 
 1. Change `Version::VERSION` in `src/Version.php` and add the version heading
-   to `CHANGELOG.md` (`## [X.Y.Z] - YYYY-MM-DD`). `tests/VersionTest.php`
-   fails if the two are different.
+   to `CHANGELOG.md` with a date (`## [X.Y.Z] - YYYY-MM-DD`).
+   `tests/VersionTest.php` fails if the two are different.
 2. Merge to `main` in the monorepo.
-3. Wait for the mirror push.
-4. Tag `vX.Y.Z` on `main` of the mirror.
+
+The mirror workflow in the monorepo (`.github/workflows/mirror-packages.yml`)
+then pushes the package and tags `vX.Y.Z` on the mirror. It makes the tag only
+when the tag does not exist and `CHANGELOG.md` has a dated heading for the
+version, so a merged version change with a dated heading IS a public release.
 
 There is no publish step and no registry token: Packagist reads the tag. The
 release workflow on the mirror only checks that the tag equals
