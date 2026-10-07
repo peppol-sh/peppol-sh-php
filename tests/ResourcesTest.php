@@ -238,6 +238,32 @@ final class ResourcesTest extends TestCase
         self::assertSame($preceding, $document['preceding_invoice'] ?? null);
     }
 
+    public function testSendPassesTheAmountDueInTheBody(): void
+    {
+        $prepaid = ['amount_due' => 0] + Payloads::invoice();
+        $http = new FakeHttpClient([FakeHttpClient::json(['id' => 'doc_1', 'status' => 'queued'], 202)]);
+        $client = new Client('ps_test_abc', ['http_client' => $http]);
+
+        $client->documents()->send($prepaid);
+
+        $http->assertSent('POST', '/v1/documents');
+        $json = $http->getRequests()[0]->getJson();
+        self::assertIsArray($json);
+        self::assertSame(0, $json['amount_due']);
+    }
+
+    public function testGetReturnsTheAmountDue(): void
+    {
+        $http = new FakeHttpClient([
+            FakeHttpClient::json(['id' => 'doc_1', 'type' => 'invoice', 'total' => 121, 'amount_due' => 0]),
+        ]);
+        $client = new Client('ps_test_abc', ['http_client' => $http]);
+
+        $document = $client->documents()->get('doc_1', ['company_id' => 'com_1']);
+
+        self::assertSame(0, $document['amount_due'] ?? null);
+    }
+
     public function testUblReturnsTheXmlString(): void
     {
         $xml = '<?xml version="1.0"?><Invoice/>';

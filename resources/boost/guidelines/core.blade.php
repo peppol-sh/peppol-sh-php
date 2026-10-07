@@ -76,6 +76,7 @@ $document['status']; // "queued"
 
 - `unit` is a UN/CEFACT unit code (`C62` is "piece"). `peppol_id` has the format `<scheme>:<value>` (`0208` is the Belgian enterprise number).
 - A credit note has `'type' => 'credit_note'`. To add the preceding invoice reference (the invoice that the credit note credits), set `preceding_invoice`: `['number' => 'INV-2026-001', 'issue_date' => '2026-03-01']`. `number` is mandatory, `issue_date` is optional.
+- For a document that is paid before you send it, set `amount_due` to the amount that is still to be paid: `'amount_due' => 0` for a fully prepaid document. The value must be from `0` up to the document total with VAT. The prepaid amount is not an input: it is the total less `amount_due`.
 - Dependency injection gives the same client:
 
 @verbatim

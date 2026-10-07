@@ -274,6 +274,7 @@ namespace PeppolSh\Generated;
  *   vatex_note?: string,
  *   invoice_period?: InvoicePeriod,
  *   preceding_invoice?: PrecedingInvoice,
+ *   amount_due?: float|int,
  * }
  *
  * @phpstan-type AllowanceCharge array{
@@ -346,6 +347,7 @@ namespace PeppolSh\Generated;
  *   issue_date?: string,
  *   due_date?: string,
  *   preceding_invoice?: PrecedingInvoice,
+ *   amount_due?: float|int,
  *   created_at?: string,
  *   sent_at?: string|null,
  *   delivered_at?: string|null,
@@ -701,6 +703,7 @@ namespace PeppolSh\Generated;
  *   vatex_note?: string,
  *   invoice_period?: InvoicePeriod,
  *   preceding_invoice?: PrecedingInvoice,
+ *   amount_due?: float|int,
  *   company_id: string,
  * }
  *
@@ -727,6 +730,7 @@ namespace PeppolSh\Generated;
  *   vatex_note?: string,
  *   invoice_period?: InvoicePeriod,
  *   preceding_invoice?: PrecedingInvoice,
+ *   amount_due?: float|int,
  *   company_id: string,
  * }>
  *
@@ -798,6 +802,7 @@ namespace PeppolSh\Generated;
  *   vatex_note?: string,
  *   invoice_period?: InvoicePeriod,
  *   preceding_invoice?: PrecedingInvoice,
+ *   amount_due?: float|int,
  *   company_id: string,
  * }
  *
