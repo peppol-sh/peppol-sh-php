@@ -20,6 +20,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   total with VAT. The prepaid amount (BT-113) is the total less `amount_due`.
   `get` returns the field only when the document was created with one.
 
+### Fixed
+
+- `total`, `subtotal`, and `tax_total` on `documents()->get` and
+  `documents()->list`: the API includes the line-level and the document-level
+  allowances and charges in the total with VAT (BT-112), the total without VAT
+  (BT-109), and the VAT total (BT-110). This is an API change: no SDK code
+  changed.
+
 ## [0.1.0] - 2026-10-07
 
 First version. The date replaces "Unreleased" when the `v0.1.0` tag is made.
