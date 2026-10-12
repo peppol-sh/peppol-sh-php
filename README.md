@@ -370,7 +370,7 @@ The SDK does not make an idempotency key for you. Put `idempotency_key` in the
 when it queues a new send and `200` when it replays an existing one; both
 carry the same shape (`id`, `status`, `url`), so you always get the `id` of
 the record that exists. A retried send therefore never produces a duplicate
-invoice on the network.
+invoice on the network, and a replay does not cost a credit.
 
 ## API surface
 
