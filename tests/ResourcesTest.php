@@ -82,8 +82,8 @@ final class ResourcesTest extends TestCase
             ],
 
             'companies.create' => [
-                fn (Client $c) => $c->companies()->create(['name' => 'Acme', 'country' => 'BE', 'peppol_id' => '0208:0123456789']),
-                'POST', '/v1/companies', [], ['name' => 'Acme', 'country' => 'BE', 'peppol_id' => '0208:0123456789'],
+                fn (Client $c) => $c->companies()->create(['name' => 'Acme', 'country' => 'BE', 'peppol_id' => '0208:0123456749']),
+                'POST', '/v1/companies', [], ['name' => 'Acme', 'country' => 'BE', 'peppol_id' => '0208:0123456749'],
             ],
             'companies.list' => [fn (Client $c) => $c->companies()->list(), 'GET', '/v1/companies'],
             'companies.get' => [fn (Client $c) => $c->companies()->get('com_1'), 'GET', '/v1/companies/com_1'],
@@ -134,16 +134,16 @@ final class ResourcesTest extends TestCase
             ],
 
             'lookup.participant' => [
-                fn (Client $c) => $c->lookup()->participant('0208:0123456789'),
-                'GET', '/v1/lookup/0208%3A0123456789',
+                fn (Client $c) => $c->lookup()->participant('0208:0123456749'),
+                'GET', '/v1/lookup/0208%3A0123456749',
             ],
             'lookup.participant (domain)' => [
-                fn (Client $c) => $c->lookup()->participant('0208:0123456789', ['domain' => 'smk', 'other' => 'x']),
-                'GET', '/v1/lookup/0208%3A0123456789', ['domain' => 'smk'],
+                fn (Client $c) => $c->lookup()->participant('0208:0123456749', ['domain' => 'smk', 'other' => 'x']),
+                'GET', '/v1/lookup/0208%3A0123456749', ['domain' => 'smk'],
             ],
             'lookup.dns' => [
-                fn (Client $c) => $c->lookup()->dns('0208:0123456789', ['domain' => 'sml']),
-                'GET', '/v1/lookup/0208%3A0123456789/dns', ['domain' => 'sml'],
+                fn (Client $c) => $c->lookup()->dns('0208:0123456749', ['domain' => 'sml']),
+                'GET', '/v1/lookup/0208%3A0123456749/dns', ['domain' => 'sml'],
             ],
 
             'validate.document' => [

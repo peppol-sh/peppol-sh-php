@@ -17,7 +17,7 @@ use PeppolSh\Exception\PeppolException;
 class Lookup extends AbstractResource
 {
     /**
-     * `GET /v1/lookup/{peppol_id}`: SMP lookup of a participant, for example `0208:0123456789`.
+     * `GET /v1/lookup/{peppol_id}`: SMP lookup of a participant, for example `0208:0123456749`.
      *
      * @param LookupParticipantQuery $params optional `domain`: the SML domain to query
      *
