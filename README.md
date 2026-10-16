@@ -399,6 +399,7 @@ says otherwise.
 | `list()` | `GET /v1/companies` | Every company in the workspace, newest first |
 | `get(string $id)` | `GET /v1/companies/{id}` | Full details for one company |
 | `update(string $id, array $params)` | `PATCH /v1/companies/{id}` | Partial update; owners and admins only |
+| `delete(string $id)` | `DELETE /v1/companies/{id}` | Delete the company and its Peppol registration; owners only, cannot be undone. A `ps_test_` key deletes only a company that is not live |
 
 **`$peppol->webhooks()`**
 

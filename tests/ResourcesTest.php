@@ -284,6 +284,21 @@ final class ResourcesTest extends TestCase
         $http->assertSent('GET', '/v1/documents/doc_1/attachments/att%201');
     }
 
+    public function testCompaniesDeleteSendsDeleteWithNoBodyAndAccepts204(): void
+    {
+        $http = new FakeHttpClient([new HttpResponse(204)]);
+        $client = new Client('ps_test_abc', ['http_client' => $http, 'max_retries' => 0]);
+
+        $client->companies()->delete('com_1');
+
+        $http->assertRequestCount(1);
+        $request = $http->getRequests()[0];
+        self::assertSame('DELETE', $request->getMethod());
+        self::assertSame('https://api.peppol.sh/v1/companies/com_1', $request->getUrl());
+        self::assertNull($request->getJson());
+        self::assertNull($request->getHeader('content-type'));
+    }
+
     public function testEmptyResponseBodyGivesAnEmptyArray(): void
     {
         $http = new FakeHttpClient([new HttpResponse(204)]);

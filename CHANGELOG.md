@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-16
+
+### Added
+
+- `companies()->delete($id)`: `DELETE /v1/companies/{id}` deletes a company,
+  its documents, and its Peppol registration, and returns nothing (the API
+  answers `204`). Only workspace owners can delete a company, and the delete
+  cannot be undone. A `ps_test_` key can delete only a company that is not
+  live; for a live company the API returns `live_company_requires_live_key`
+  (#405).
+
 ### Changed
 
 - The API no longer sends a `tax_id` with no country prefix (for example the
@@ -81,6 +92,7 @@ First version. The date replaces "Unreleased" when the `v0.1.0` tag is made.
   the `Peppol` facade, a `PeppolSh\Client` singleton, the `peppol.webhook`
   route middleware, `Peppol::fake()`, and Laravel Boost AI guidelines.
 
-[Unreleased]: https://github.com/peppol-sh/peppol-sh-php/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/peppol-sh/peppol-sh-php/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/peppol-sh/peppol-sh-php/releases/tag/v0.3.0
 [0.2.0]: https://github.com/peppol-sh/peppol-sh-php/releases/tag/v0.2.0
 [0.1.0]: https://github.com/peppol-sh/peppol-sh-php/releases/tag/v0.1.0

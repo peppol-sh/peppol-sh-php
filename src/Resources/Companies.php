@@ -69,4 +69,16 @@ class Companies extends AbstractResource
     {
         return $this->json('PATCH', '/v1/companies/' . self::seg($id), [], $params);
     }
+
+    /**
+     * `DELETE /v1/companies/{id}`: deletes a company, its documents, and its
+     * Peppol registration. Owners only; it cannot be undone. A `ps_test_` key
+     * can delete only a company that is not live.
+     *
+     * @throws PeppolException
+     */
+    public function delete(string $id): void
+    {
+        $this->json('DELETE', '/v1/companies/' . self::seg($id));
+    }
 }

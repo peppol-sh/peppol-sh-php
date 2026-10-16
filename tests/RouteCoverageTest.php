@@ -31,6 +31,7 @@ final class RouteCoverageTest extends TestCase
         'listCompanies' => 'companies.list',
         'getCompany' => 'companies.get',
         'updateCompany' => 'companies.update',
+        'deleteCompany' => 'companies.delete',
 
         'sendDocument' => 'documents.send',
         'sendDocumentBatch' => 'documents.sendBatch',

@@ -38,7 +38,7 @@ $peppol = new \PeppolSh\Client(getenv('PEPPOL_API_KEY'), [
 | Resource | Methods |
 |---|---|
 | `$peppol` | `signup`, `health`, `request`, `requestRaw` |
-| `$peppol->companies()` | `create`, `list`, `get`, `update` |
+| `$peppol->companies()` | `create`, `list`, `get`, `update`, `delete` |
 | `$peppol->documents()` | `send`, `sendBatch`, `list`, `get`, `history`, `ubl`, `listAttachments`, `getAttachment` |
 | `$peppol->validate()` | `document` |
 | `$peppol->lookup()` | `participant`, `dns` |
