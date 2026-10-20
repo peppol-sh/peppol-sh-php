@@ -530,6 +530,7 @@ namespace PeppolSh\Generated;
  *     message: string,
  *     param?: string,
  *     details?: mixed,
+ *     request_id?: string,
  *   },
  * }
  *
