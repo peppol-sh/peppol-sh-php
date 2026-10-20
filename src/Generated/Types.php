@@ -34,6 +34,10 @@ namespace PeppolSh\Generated;
  *   status: 'ok'|'degraded',
  *   version: string,
  *   environment: 'production'|'staging'|'development'|'test'|'unknown',
+ *   worker_version: array{
+ *     id: string,
+ *     created_at: string,
+ *   }|null,
  *   checks: array{
  *     db: 'ok'|'error',
  *   },
@@ -353,6 +357,29 @@ namespace PeppolSh\Generated;
  *   delivered_at?: string|null,
  * }
  *
+ * @phpstan-type DocumentDetail array{
+ *   id?: string,
+ *   type?: 'invoice'|'credit_note',
+ *   number?: string,
+ *   status?: DocumentStatus,
+ *   from?: PartyInfo,
+ *   to?: PartyInfo,
+ *   lines?: list<LineItem>,
+ *   subtotal?: float|int,
+ *   tax_total?: float|int,
+ *   total?: float|int,
+ *   currency?: string,
+ *   issue_date?: string,
+ *   due_date?: string,
+ *   preceding_invoice?: PrecedingInvoice,
+ *   amount_due?: float|int,
+ *   created_at?: string,
+ *   sent_at?: string|null,
+ *   delivered_at?: string|null,
+ *   sandbox: bool,
+ *   events: list<DocumentEvent>,
+ * }
+ *
  * @phpstan-type DocumentAccepted array{
  *   id: string,
  *   status: 'queued',
@@ -369,9 +396,12 @@ namespace PeppolSh\Generated;
  * }
  *
  * @phpstan-type DocumentEvent array{
- *   event?: 'created'|'validated'|'queued'|'sending'|'delivered'|'failed',
- *   timestamp?: string,
- *   detail?: string|null,
+ *   id: string,
+ *   type: string,
+ *   from_status: DocumentStatus|null,
+ *   to_status: DocumentStatus,
+ *   message: string|null,
+ *   created_at: string,
  * }
  *
  * @phpstan-type DocumentAttachment array{
@@ -741,7 +771,7 @@ namespace PeppolSh\Generated;
  *   company_id: string,
  * }
  *
- * @phpstan-type GetDocumentResponse Document
+ * @phpstan-type GetDocumentResponse DocumentDetail
  *
  * @phpstan-type GetDocumentHistoryResponse list<DocumentEvent>
  *
