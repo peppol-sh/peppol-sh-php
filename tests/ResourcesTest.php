@@ -225,6 +225,21 @@ final class ResourcesTest extends TestCase
         self::assertSame($preceding, $json['preceding_invoice']);
     }
 
+    public function testSendPassesARecipientWithAPeppolIdAndNoTaxId(): void
+    {
+        $recipient = ['name' => 'Fjord AS', 'peppol_id' => '0192:995313863'];
+        $invoice = ['to' => $recipient] + Payloads::invoice();
+        $http = new FakeHttpClient([FakeHttpClient::json(['id' => 'doc_1', 'status' => 'queued'], 202)]);
+        $client = new Client('ps_test_abc', ['http_client' => $http]);
+
+        $client->documents()->send($invoice);
+
+        $http->assertSent('POST', '/v1/documents');
+        $json = $http->getRequests()[0]->getJson();
+        self::assertIsArray($json);
+        self::assertSame($recipient, $json['to']);
+    }
+
     public function testGetReturnsThePrecedingInvoiceReference(): void
     {
         $preceding = ['number' => 'INV-2026-001', 'issue_date' => '2026-03-01'];

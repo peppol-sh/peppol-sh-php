@@ -295,7 +295,7 @@ namespace PeppolSh\Generated;
  *
  * @phpstan-type Party array{
  *   name: string,
- *   tax_id: string,
+ *   tax_id?: string,
  *   address?: Address,
  *   email?: string,
  *   peppol_id?: string,

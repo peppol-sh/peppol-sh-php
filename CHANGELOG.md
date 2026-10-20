@@ -7,8 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-20
+
 ### Changed
 
+- The `Party` type (the `from` and `to` of `documents()->send()` and
+  `documents()->sendBatch()`) has an optional `tax_id`, as in the API: a party
+  needs a `tax_id` only when it has no `peppol_id`. PHPStan now accepts a
+  party with only a `peppol_id` (for example a Norwegian company with no VAT
+  number) (#425).
 - The `ErrorObject` type has an optional `request_id` (the `cf-ray` of the
   request) on an `internal_error`. Give it to us when you report the error
   (#421).
@@ -21,6 +28,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   for example `1.to.tax_id` (#421).
 - `validate()->document()` answers `valid: false` (and not `500`) for a body
   with no `from` or `to`, with the same checks as a send (#421).
+
+### Fixed
+
+- A sandbox send no longer fails for a party with a `peppol_id`, no `tax_id`
+  and no `address.country`. The UBL of a party with no `tax_id` has no
+  `PartyTaxScheme` (#425).
 
 ## [0.3.0] - 2026-10-16
 
@@ -107,7 +120,8 @@ First version. The date replaces "Unreleased" when the `v0.1.0` tag is made.
   the `Peppol` facade, a `PeppolSh\Client` singleton, the `peppol.webhook`
   route middleware, `Peppol::fake()`, and Laravel Boost AI guidelines.
 
-[Unreleased]: https://github.com/peppol-sh/peppol-sh-php/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/peppol-sh/peppol-sh-php/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/peppol-sh/peppol-sh-php/releases/tag/v0.4.0
 [0.3.0]: https://github.com/peppol-sh/peppol-sh-php/releases/tag/v0.3.0
 [0.2.0]: https://github.com/peppol-sh/peppol-sh-php/releases/tag/v0.2.0
 [0.1.0]: https://github.com/peppol-sh/peppol-sh-php/releases/tag/v0.1.0
