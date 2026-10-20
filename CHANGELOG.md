@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The `event_type` of the `AuditEvent` shape in `Generated/Types.php` has
+  `membership.invite_resent`: the dashboard writes it when an owner or an
+  admin sends a pending invite again. `workspaces()->listAuditEvents()` and
+  `account()->listAuditEvents()` can return it.
+- `workspaces()->inviteMember()` adds only an existing account (an `email`
+  with no account gives `404 account_not_found`), and the added account now
+  gets an email from peppol.sh. The API contract now says so; the PHP code
+  did not change.
 - `DocumentEvent`, the item type of `documents()->history()`, has the fields
   the API sends: `id`, `type`, `from_status`, `to_status`, `message` and
   `created_at`. The old `event`, `timestamp` and `detail` fields were never

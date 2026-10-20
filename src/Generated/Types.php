@@ -21,7 +21,7 @@ namespace PeppolSh\Generated;
  *   id: string,
  *   actor_account_id?: string|null,
  *   workspace_id?: string|null,
- *   event_type: 'api_key.created'|'api_key.revoked'|'company.created'|'company.updated'|'membership.invited'|'membership.removed'|'membership.role_changed'|'membership.ownership_transferred'|'webhook.created'|'webhook.deleted'|'workspace.created',
+ *   event_type: 'api_key.created'|'api_key.revoked'|'company.created'|'company.updated'|'membership.invited'|'membership.invite_resent'|'membership.removed'|'membership.role_changed'|'membership.ownership_transferred'|'webhook.created'|'webhook.deleted'|'workspace.created',
  *   subject_type?: 'api_key'|'company'|'membership'|'webhook'|'workspace'|null,
  *   subject_id?: string|null,
  *   ip?: string|null,
