@@ -240,6 +240,35 @@ final class ResourcesTest extends TestCase
         self::assertSame($recipient, $json['to']);
     }
 
+    public function testSendPassesTheOrderReferencesTheBuyerReferenceAndTheBuyerContact(): void
+    {
+        $recipient = [
+            'name' => 'Globex NV',
+            'tax_id' => 'BE0987654321',
+            'email' => 'ann@globex.example',
+            'contact_name' => 'Ann Peeters',
+            'identifier' => 'CUST-007',
+        ];
+        $invoice = [
+            'buyer_reference' => 'CC-42',
+            'purchase_order' => 'PO-4711',
+            'sales_order' => 'SO-88',
+            'to' => $recipient,
+        ] + Payloads::invoice();
+        $http = new FakeHttpClient([FakeHttpClient::json(['id' => 'doc_1', 'status' => 'queued'], 202)]);
+        $client = new Client('ps_test_abc', ['http_client' => $http]);
+
+        $client->documents()->send($invoice);
+
+        $http->assertSent('POST', '/v1/documents');
+        $json = $http->getRequests()[0]->getJson();
+        self::assertIsArray($json);
+        self::assertSame('CC-42', $json['buyer_reference']);
+        self::assertSame('PO-4711', $json['purchase_order']);
+        self::assertSame('SO-88', $json['sales_order']);
+        self::assertSame($recipient, $json['to']);
+    }
+
     public function testGetReturnsThePrecedingInvoiceReference(): void
     {
         $preceding = ['number' => 'INV-2026-001', 'issue_date' => '2026-03-01'];

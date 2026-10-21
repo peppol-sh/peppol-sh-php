@@ -76,6 +76,8 @@ $document['status']; // "queued"
 
 - `unit` is a UN/CEFACT unit code (`C62` is "piece"). `peppol_id` has the format `<scheme>:<value>` (`0208` is the Belgian enterprise number).
 - A party (`from`, `to`) needs a `tax_id`, a `peppol_id`, or both. A party with no VAT number (for example a Norwegian company) can have only a `peppol_id`: `'to' => ['name' => 'Fjord AS', 'peppol_id' => '0192:995313863']`.
+- `buyer_reference` (BT-10) is the reference the buyer asks for (for example a cost centre); it is not a purchase order. Put the buyer's purchase order number in `purchase_order` (BT-13) and your own order number in `sales_order` (BT-14): `'purchase_order' => 'PO-4711', 'sales_order' => 'SO-88'`.
+- A party can have an `email` and a `contact_name`; a `contact_name` needs an `email` on the same party. Only `to` can have an `identifier` (the buyer's number in your system, BT-46): `'to' => ['name' => 'Globex NV', 'tax_id' => 'BE0987654394', 'email' => 'ann@globex.example', 'contact_name' => 'Ann Peeters', 'identifier' => 'CUST-007']`.
 - A credit note has `'type' => 'credit_note'`. To add the preceding invoice reference (the invoice that the credit note credits), set `preceding_invoice`: `['number' => 'INV-2026-001', 'issue_date' => '2026-03-01']`. `number` is mandatory, `issue_date` is optional.
 - For a document that is paid before you send it, set `amount_due` to the amount that is still to be paid: `'amount_due' => 0` for a fully prepaid document. The value must be from `0` up to the document total with VAT. The prepaid amount is not an input: it is the total less `amount_due`.
 - Dependency injection gives the same client:
