@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The README describes the format of a VAT-scheme `peppol_id` (`99xx`): the
+  VAT number with its country prefix and check digit, `9933` without `EL`. The
+  API returns the new error code `peppol_id_tax_id_mismatch` for a VAT-scheme
+  Peppol ID that is not the VAT number in `tax_id`, and names the Peppol ID to
+  use (#454).
 - The README describes the characters of a company `peppol_id`: 1 to 130
   letters, digits, `-`, `.`, `_` or `~` after the colon, no whitespace, and
   10 digits for `0208`. The API rejects `0208:0410.086.603` with
