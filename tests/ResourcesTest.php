@@ -296,6 +296,50 @@ final class ResourcesTest extends TestCase
         self::assertSame(0, $json['amount_due']);
     }
 
+    public function testSendPassesABankgiroAndAnIbanAccountInTheBody(): void
+    {
+        $swedish = [
+            'payment_means' => [
+                'method' => 'bank_transfer',
+                'reference' => '12345678',
+                'accounts' => [
+                    ['type' => 'bankgiro', 'number' => '5555-5555'],
+                    ['type' => 'iban', 'number' => 'SE4550000000058398257466', 'bic' => 'ESSESESS'],
+                ],
+            ],
+        ] + Payloads::invoice();
+        $http = new FakeHttpClient([FakeHttpClient::json(['id' => 'doc_1', 'status' => 'queued'], 202)]);
+        $client = new Client('ps_test_abc', ['http_client' => $http]);
+
+        $client->documents()->send($swedish);
+
+        $http->assertSent('POST', '/v1/documents');
+        $json = $http->getRequests()[0]->getJson();
+        self::assertIsArray($json);
+        self::assertSame([
+            'method' => 'bank_transfer',
+            'reference' => '12345678',
+            'accounts' => [
+                ['type' => 'bankgiro', 'number' => '5555-5555'],
+                ['type' => 'iban', 'number' => 'SE4550000000058398257466', 'bic' => 'ESSESESS'],
+            ],
+        ], $json['payment_means']);
+    }
+
+    public function testSendPassesTheRoundingAmountInTheBody(): void
+    {
+        $rounded = ['rounding_amount' => -0.6] + Payloads::invoice();
+        $http = new FakeHttpClient([FakeHttpClient::json(['id' => 'doc_1', 'status' => 'queued'], 202)]);
+        $client = new Client('ps_test_abc', ['http_client' => $http]);
+
+        $client->documents()->send($rounded);
+
+        $http->assertSent('POST', '/v1/documents');
+        $json = $http->getRequests()[0]->getJson();
+        self::assertIsArray($json);
+        self::assertSame(-0.6, $json['rounding_amount']);
+    }
+
     public function testGetReturnsTheAmountDue(): void
     {
         $http = new FakeHttpClient([

@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-30
+
+### Added
+
+- The `payment_means` of `documents()->send()`, `documents()->sendBatch()` and
+  `validate()->document()` has an optional `accounts`: one to ten accounts of
+  type `iban`, `bankgiro`, `plusgiro` or `other`, with the same reference.
+  `method` must be `bank_transfer`. On a send, `iban` and `bic` give a 400
+  together with `accounts`; `validate()->document()` returns that as
+  `valid: false` (#414).
+- The body of the same methods has an optional `rounding_amount` (BT-114,
+  `cbc:PayableRoundingAmount`): the signed amount that rounds the amount due,
+  below `1.00` either way. `total` does not include it. New error codes on a
+  send: `rounding_amount_out_of_range` and `amount_due_excludes_rounding`
+  (#415).
+
 ### Changed
 
 - The README describes the format of a VAT-scheme `peppol_id` (`99xx`): the
@@ -197,7 +213,8 @@ First version. The date replaces "Unreleased" when the `v0.1.0` tag is made.
   the `Peppol` facade, a `PeppolSh\Client` singleton, the `peppol.webhook`
   route middleware, `Peppol::fake()`, and Laravel Boost AI guidelines.
 
-[Unreleased]: https://github.com/peppol-sh/peppol-sh-php/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/peppol-sh/peppol-sh-php/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/peppol-sh/peppol-sh-php/releases/tag/v0.6.0
 [0.5.0]: https://github.com/peppol-sh/peppol-sh-php/releases/tag/v0.5.0
 [0.4.0]: https://github.com/peppol-sh/peppol-sh-php/releases/tag/v0.4.0
 [0.3.0]: https://github.com/peppol-sh/peppol-sh-php/releases/tag/v0.3.0
