@@ -341,6 +341,13 @@ namespace PeppolSh\Generated;
  *   iban?: string,
  *   bic?: string,
  *   reference?: string,
+ *   accounts?: list<PaymentAccount>,
+ * }
+ *
+ * @phpstan-type PaymentAccount array{
+ *   type: 'iban'|'bankgiro'|'plusgiro'|'other',
+ *   number: string,
+ *   bic?: string,
  * }
  *
  * @phpstan-type Attachment array{
