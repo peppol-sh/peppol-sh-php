@@ -21,9 +21,13 @@ $peppol = new \PeppolSh\Client(getenv('PEPPOL_API_KEY'), [
   `POST /v1/signup` without the key and returns a sandbox key once.
 - **The key prefix selects the environment, the client does not.** A
   `ps_test_` key needs `'base_url' => Client::SANDBOX_BASE_URL`
-  (`https://sandbox.peppol.sh`; delivery by email, no real Peppol network). A
-  `ps_live_` key uses the default `https://api.peppol.sh`. Never send test
-  data with a live key.
+  (`https://sandbox.peppol.sh`; the checks of a live send, no real Peppol
+  delivery). A `ps_live_` key uses the default `https://api.peppol.sh`. Never
+  send test data with a live key.
+- **A sandbox send fails where a live send fails.** `from` must be the company
+  of `company_id`, the document must pass Peppol BIS 3.0, and the receiver
+  must be registered on the Peppol network. Send sandbox documents to the
+  sandbox test receiver `0208:1234567894` (VAT number `BE1234567894`).
 - **Read the key from the environment.** Do not write it into source files.
 - **Arrays in, arrays out.** The keys are the `snake_case` names of the JSON
   API. There are no model classes and no camelCase options in a request body.

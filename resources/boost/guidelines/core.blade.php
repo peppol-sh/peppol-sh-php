@@ -28,6 +28,7 @@ PEPPOL_WEBHOOK_SECRET=
 - `company_id` is the id (`com_...`) of the sending company in the peppol.sh workspace. Get it from `Peppol::companies()->list()` or create one with `Peppol::companies()->create([...])`.
 - Always set `idempotency_key` to a stable value for each document (for example the invoice number). A repeated call with the same key returns the first document and does not send a duplicate.
 - Sending is asynchronous. `send()` returns `id`, `status` (`queued`) and `url`. Use a webhook, or `Peppol::documents()->get($id, ['company_id' => $companyId])`, to get the final status.
+- A sandbox send runs the checks of a live send: `from` must be the company of `company_id`, the document must pass Peppol BIS 3.0, and the receiver must be registered on the Peppol network. If a check fails, the status becomes `failed`. In the sandbox, send to the sandbox test receiver `0208:1234567894` (VAT number `BE1234567894`), as in the example below.
 
 @verbatim
 <code-snippet name="Send an invoice" lang="php">
@@ -52,9 +53,15 @@ $document = Peppol::documents()->send([
         ],
     ],
     'to' => [
-        'name' => 'Globex NV',
-        'tax_id' => 'BE0987654394',
-        'peppol_id' => '0208:0987654394',
+        'name' => 'Sandbox Test Receiver',
+        'tax_id' => 'BE1234567894',
+        'peppol_id' => '0208:1234567894',
+        'address' => [
+            'street' => 'Teststraat 1',
+            'city' => 'Brussels',
+            'postal_code' => '1000',
+            'country' => 'BE',
+        ],
     ],
     'lines' => [
         [
