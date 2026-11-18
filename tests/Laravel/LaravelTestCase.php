@@ -73,7 +73,7 @@ abstract class LaravelTestCase extends TestCase
     /**
      * A valid `POST /v1/documents` body (the example of the README).
      *
-     * @return array{company_id: string, type: 'invoice', number: string, issue_date: string, due_date: string, currency: string, from: array{name: string, tax_id: string, peppol_id: string}, to: array{name: string, tax_id: string, peppol_id: string}, lines: list<array{description: string, quantity: int, unit: string, unit_price: float, tax_rate: float}>, idempotency_key: string}
+     * @return array{company_id: string, type: 'invoice', number: string, issue_date: string, due_date: string, currency: 'EUR', from: array{name: string, tax_id: string, peppol_id: string}, to: array{name: string, tax_id: string, peppol_id: string}, lines: list<array{description: string, quantity: int, unit: string, unit_price: float, tax_rate: float}>, idempotency_key: string}
      */
     protected static function invoice(): array
     {

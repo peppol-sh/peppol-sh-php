@@ -340,6 +340,20 @@ final class ResourcesTest extends TestCase
         self::assertSame(-0.6, $json['rounding_amount']);
     }
 
+    public function testSendPassesTheCurrencyInTheBody(): void
+    {
+        $swedish = ['currency' => 'SEK'] + Payloads::invoice();
+        $http = new FakeHttpClient([FakeHttpClient::json(['id' => 'doc_1', 'status' => 'queued'], 202)]);
+        $client = new Client('ps_test_abc', ['http_client' => $http]);
+
+        $client->documents()->send($swedish);
+
+        $http->assertSent('POST', '/v1/documents');
+        $json = $http->getRequests()[0]->getJson();
+        self::assertIsArray($json);
+        self::assertSame('SEK', $json['currency']);
+    }
+
     public function testGetReturnsTheAmountDue(): void
     {
         $http = new FakeHttpClient([
