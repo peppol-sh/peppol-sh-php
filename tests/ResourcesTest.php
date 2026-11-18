@@ -269,6 +269,34 @@ final class ResourcesTest extends TestCase
         self::assertSame($recipient, $json['to']);
     }
 
+    public function testSendPassesTheContactPhoneOfTheSellerAndOfTheBuyer(): void
+    {
+        $sender = [
+            'name' => 'Acme GmbH',
+            'tax_id' => 'DE123456789',
+            'email' => 'billing@acme.example',
+            'contact_name' => 'Jan Janssens',
+            'phone' => '+49 30 1234567',
+        ];
+        // A phone needs no email on the same party.
+        $recipient = [
+            'name' => 'Globex GmbH',
+            'tax_id' => 'DE987654321',
+            'phone' => '+49 89 7654321',
+        ];
+        $invoice = ['from' => $sender, 'to' => $recipient] + Payloads::invoice();
+        $http = new FakeHttpClient([FakeHttpClient::json(['id' => 'doc_1', 'status' => 'queued'], 202)]);
+        $client = new Client('ps_test_abc', ['http_client' => $http]);
+
+        $client->documents()->send($invoice);
+
+        $http->assertSent('POST', '/v1/documents');
+        $json = $http->getRequests()[0]->getJson();
+        self::assertIsArray($json);
+        self::assertSame($sender, $json['from']);
+        self::assertSame($recipient, $json['to']);
+    }
+
     public function testGetReturnsThePrecedingInvoiceReference(): void
     {
         $preceding = ['number' => 'INV-2026-001', 'issue_date' => '2026-03-01'];

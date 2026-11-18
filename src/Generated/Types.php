@@ -306,6 +306,7 @@ namespace PeppolSh\Generated;
  *   address?: Address,
  *   email?: string,
  *   contact_name?: string,
+ *   phone?: string,
  *   peppol_id?: string,
  * }
  *
@@ -315,6 +316,7 @@ namespace PeppolSh\Generated;
  *   address?: Address,
  *   email?: string,
  *   contact_name?: string,
+ *   phone?: string,
  *   peppol_id?: string,
  *   identifier?: string,
  * }
@@ -424,6 +426,7 @@ namespace PeppolSh\Generated;
  *   peppol_id?: string,
  *   email?: string,
  *   contact_name?: string,
+ *   phone?: string,
  * }
  *
  * @phpstan-type RecipientPartyInfo array{
@@ -432,6 +435,7 @@ namespace PeppolSh\Generated;
  *   peppol_id?: string,
  *   email?: string,
  *   contact_name?: string,
+ *   phone?: string,
  *   identifier?: string,
  * }
  *
