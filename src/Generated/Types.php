@@ -125,6 +125,7 @@ namespace PeppolSh\Generated;
  *     city?: string,
  *     postal_code?: string,
  *   },
+ *   invoice_contact?: InvoiceContactInput,
  * }
  *
  * @phpstan-type CompanyUpdate array{
@@ -140,6 +141,19 @@ namespace PeppolSh\Generated;
  *     city?: string,
  *     postal_code?: string,
  *   },
+ *   invoice_contact?: InvoiceContactInput,
+ * }
+ *
+ * @phpstan-type InvoiceContactInput array{
+ *   name?: string|null,
+ *   email?: string|null,
+ *   phone?: string|null,
+ * }|null
+ *
+ * @phpstan-type InvoiceContact array{
+ *   name: string|null,
+ *   email: string|null,
+ *   phone: string|null,
  * }
  *
  * @phpstan-type Company array{
@@ -159,6 +173,7 @@ namespace PeppolSh\Generated;
  *   }|null,
  *   iban?: string|null,
  *   peppol_id?: string|null,
+ *   invoice_contact?: InvoiceContact,
  *   created_at?: string,
  * }
  *
@@ -170,6 +185,7 @@ namespace PeppolSh\Generated;
  *   is_live?: bool,
  *   workspace_id?: string,
  *   created_at?: string,
+ *   invoice_contact?: InvoiceContact,
  * }
  *
  * @phpstan-type CompanyDetail array{
@@ -187,6 +203,7 @@ namespace PeppolSh\Generated;
  *   },
  *   iban?: string|null,
  *   peppol_id?: string|null,
+ *   invoice_contact?: InvoiceContact,
  *   is_live?: bool,
  *   created_at?: string,
  *   updated_at?: string,

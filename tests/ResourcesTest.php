@@ -414,6 +414,74 @@ final class ResourcesTest extends TestCase
         $http->assertSent('GET', '/v1/documents/doc_1/attachments/att%201');
     }
 
+    public function testCompaniesCreateSendsTheInvoiceContactAndReturnsIt(): void
+    {
+        $contact = [
+            'name' => 'Erika Mustermann',
+            'email' => 'rechnung@acme.example',
+            'phone' => '+49 30 1234567',
+        ];
+        $http = new FakeHttpClient([
+            FakeHttpClient::json(['id' => 'com_1', 'name' => 'Acme GmbH', 'invoice_contact' => $contact], 201),
+        ]);
+        $client = new Client('ps_test_abc', ['http_client' => $http]);
+
+        $company = $client->companies()->create([
+            'name' => 'Acme GmbH',
+            'country' => 'DE',
+            'peppol_id' => '9930:DE123456788',
+            'invoice_contact' => $contact,
+        ]);
+
+        $http->assertSent('POST', '/v1/companies');
+        $json = $http->getRequests()[0]->getJson();
+        self::assertIsArray($json);
+        self::assertSame($contact, $json['invoice_contact']);
+        self::assertSame('+49 30 1234567', $company['invoice_contact']['phone'] ?? null);
+    }
+
+    public function testCompaniesUpdateSendsTheInvoiceContactAndNullClearsAField(): void
+    {
+        $http = new FakeHttpClient([
+            FakeHttpClient::json([
+                'id' => 'com_1',
+                'invoice_contact' => ['name' => 'Erika Mustermann', 'email' => null, 'phone' => null],
+            ]),
+        ]);
+        $client = new Client('ps_test_abc', ['http_client' => $http]);
+
+        $company = $client->companies()->update('com_1', [
+            'invoice_contact' => ['name' => 'Erika Mustermann', 'phone' => null],
+        ]);
+
+        $http->assertSent('PATCH', '/v1/companies/com_1');
+        $json = $http->getRequests()[0]->getJson();
+        self::assertIsArray($json);
+        self::assertSame(['name' => 'Erika Mustermann', 'phone' => null], $json['invoice_contact']);
+        self::assertSame(
+            ['name' => 'Erika Mustermann', 'email' => null, 'phone' => null],
+            $company['invoice_contact'] ?? null,
+        );
+    }
+
+    public function testCompaniesUpdateWithInvoiceContactNullClearsTheThreeFields(): void
+    {
+        $http = new FakeHttpClient([
+            FakeHttpClient::json([
+                'id' => 'com_1',
+                'invoice_contact' => ['name' => null, 'email' => null, 'phone' => null],
+            ]),
+        ]);
+        $client = new Client('ps_test_abc', ['http_client' => $http]);
+
+        $client->companies()->update('com_1', ['invoice_contact' => null]);
+
+        $json = $http->getRequests()[0]->getJson();
+        self::assertIsArray($json);
+        self::assertArrayHasKey('invoice_contact', $json);
+        self::assertNull($json['invoice_contact']);
+    }
+
     public function testCompaniesDeleteSendsDeleteWithNoBodyAndAccepts204(): void
     {
         $http = new FakeHttpClient([new HttpResponse(204)]);
