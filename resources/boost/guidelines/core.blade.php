@@ -91,6 +91,7 @@ $document['status']; // "queued"
 - For a document that is paid before you send it, set `amount_due` to the amount that is still to be paid: `'amount_due' => 0` for a fully prepaid document. The value must be from `0` up to the document total with VAT plus `rounding_amount`. The prepaid amount is not an input: it is the total with VAT plus `rounding_amount` less `amount_due`.
 - To round the amount due, for example to whole kronor, set `rounding_amount` (BT-114): the signed amount, below `1.00` either way: `'rounding_amount' => -0.6`. `total` does not include it. With an `amount_due`, send the rounded amount.
 - For a bankgiro or plusgiro number, or for more than one account, use `payment_means.accounts`, with `method` `bank_transfer`: `'payment_means' => ['method' => 'bank_transfer', 'reference' => '12345678', 'accounts' => [['type' => 'bankgiro', 'number' => '5555-5555'], ['type' => 'iban', 'number' => 'SE4550000000058398257466', 'bic' => 'ESSESESS']]]`. `iban` and `bic` give a 400 together with `accounts`.
+- A `payment_means` needs an account number (`iban` or `accounts`, BR-61). When it has neither, the `iban` of the company fills `payment_means.iban` when that IBAN is valid (spaces and dashes are removed); without one the send fails with `ValidationException` (status `422`, code `payment_account_required`) and no credit is charged.
 - Dependency injection gives the same client:
 
 @verbatim
